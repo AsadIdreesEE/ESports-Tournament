@@ -1,0 +1,1051 @@
+
+
+from ast import Try
+from pickle import TRUE
+import cv2
+import numpy as np
+import time
+from pytesseract import pytesseract
+
+# Defining Variables
+Team1name0=Team1name1=Team1name2=Team1name3=Team1name4=Team1name5=Team1name6=Team1name7='____'
+Team2name0=Team2name1=Team2name2=Team2name3=Team2name4=Team2name5=Team2name6=Team2name7='----'
+Team1name_prev0=Team1name_prev1=Team1name_prev2=Team1name_prev3=Team1name_prev4=Team1name_prev5=Team1name_prev6=Team1name_prev7='____'
+Team2name_prev0=Team2name_prev1=Team2name_prev2=Team2name_prev3=Team2name_prev4=Team2name_prev5=Team2name_prev6=Team2name_prev7='____'
+MatchTime0=MatchTime1=MatchTime2=MatchTime3=MatchTime4=MatchTime5=MatchTime6=MatchTime7=0
+MatchTime_prev0=MatchTime_prev1=MatchTime_prev2=MatchTime_prev3=MatchTime_prev4=MatchTime_prev5=MatchTime_prev6=MatchTime_prev7=0
+
+f0=f1=f2=f3=f4=f5=f6=f7=fp1=fp2=fp3=fp4=fp5=fp6=fp7=0 # Flag to connect all data with showing the time 
+i0=i1=i2=i3=i4=i5=i6=i7=i8=0
+x10=x11=x12=x13=x14=x15=x16=x17=0
+y10=y11=y12=y13=y14=y15=y16=y17=0
+x1p0=x1p1=x1p2=x1p3=x1p4=x1p5=x1p6=x1p7=0
+y1p0=y1p1=y1p2=y1p3=y1p4=y1p5=y1p6=y1p7=0
+
+
+var="00000000"
+#var='EEEEEEEE'
+
+#Opening HDMIs
+cap0 = cv2.VideoCapture(0)
+
+cap1 = cv2.VideoCapture(1)
+
+
+#Adjusting the Resolution of ps5
+
+cap0.set(3, 1920)
+cap0.set(4, 1080)
+
+
+
+cap1.set(3, 1920)
+cap1.set(4, 1080)
+
+
+
+pytesseract.tesseract_cmd= "C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+
+while True:
+   
+    ret,frame0 = cap0.read()
+    
+    ret,frame1 = cap1.read()
+ 
+   
+    frame0 = cv2.resize(frame0,(3840,2160))
+    
+    frame1 = cv2.resize(frame1,(3840,2160))
+   
+    frame0=cv2.cvtColor(frame0, cv2.COLOR_BGR2GRAY)
+    frame1=cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+    
+    f= open('D:\\TeamsPlaying.txt', 'r') 
+    if (f.readable()==True):
+            #f=open('D:\\TeamsPlaying.txt', 'r')
+        var=f.read()+'00000000'
+    print('Started')
+    if (var[0]=='E'):
+        frameTime0 = frame0[280:350, 420:615]
+        frameTeam1_name0 = frame0[205:270, 230:390]
+        frameTeam2_name0 = frame0[205:270, 630:815]
+        frame_Score10= frame0[210:345, 440:585]
+        frame_Score20= frame0[210:345, 440:585]
+        #cv2.imshow('frame',frameTeam1_name)
+        Game_Time0= pytesseract.image_to_string(frameTime0)
+        Game_Time0=Game_Time0.rstrip('\n')
+        Game_Tim0=Game_Time0+"AAA"
+        Team1name0 = pytesseract.image_to_string(frameTeam1_name0)
+        Team1name0=Team1name0.rstrip('\n')# removing /n to add data after
+        Team1name0=Team1name0+'1___'# adding data after that in case there is nothing to read 
+        Team2name0 = pytesseract.image_to_string(frameTeam2_name0)
+        Team2name0=Team2name0.rstrip('\n')
+        Team2name0=Team2name0+'1___'
+        Score10=pytesseract.image_to_string(frame_Score10)
+        Score10=Score10.rstrip('\n')# Removing /n from data 
+        Score10=Score10+"AAA"
+        Score20=pytesseract.image_to_string(frame_Score20)
+        Score20=Score20.rstrip('\n')# Removing /n from data 
+        Score20=Score20+"AAA"
+    # Showing Time of the Match
+        Char1_Time0= Game_Time0[:1] 
+        Char2_Time0=Game_Time0[1:2] 
+        Char3_Time0=Game_Time0[2:3]
+        Char1_2_Time0= Game_Time0[:2] 
+        if  (Char1_Time0 =='0') or (Char1_Time0 =='1') or (Char1_Time0=='2') or (Char1_Time0=='3') or (Char1_Time0=='4') or (Char1_Time0=='5') or (Char1_Time0=='6') or (Char1_Time0=='7')or (Char1_Time0=='8') or (Char1_Time0=='9'):
+            if (Char2_Time0 =='0') or (Char2_Time0 =='1') or (Char2_Time0=='2') or (Char2_Time0=='3') or (Char2_Time0=='4') or (Char2_Time0=='5') or (Char2_Time0=='6') or (Char2_Time0=='7')or (Char2_Time0=='8') or (Char2_Time0=='9'):
+                MatchTime0=MatchTime_prev0=int(Char1_2_Time0)
+                f0=1
+        else:
+            MatchTime0=MatchTime_prev0
+            f0=0
+    # End Time of the Match
+    
+    #Showing the Name of the Teams
+        if (Team1name0[3]!='1'):
+            Team1name0= Team1name_prev0
+        else:
+            if (f0==1):
+                Team1name_prev0=Team1name0[:3]
+            else:
+                Team1name0= Team1name_prev0
+
+        if (Team2name0[3]!='1'):
+            Team2name0= Team2name_prev0
+        else:
+            if (f0==1):
+                Team2name_prev0=Team2name0[:3]
+            else:
+                Team2name0= Team2name_prev0
+ 
+    # Showing the Scores:
+        if (Score10[0]=='0') or (Score10[0]=='1') or (Score10[0]=='2') or (Score10[0]=='3') or (Score10[0]=='4') or (Score10[0]=='5') or (Score10[0]=='6') or (Score10[0]=='7') or (Score10[0]=='8') or (Score10[0]=='9'):
+            if (int(Score10[0])<=(1+x10)):
+                x10=x1p0=int(Score10[0])
+        else:
+            x10=x1p0
+   
+        if (Score20[2]=='0') or (Score20[2]=='1') or (Score20[2]=='2') or (Score20[2]=='3') or (Score20[2]=='4') or (Score20[2]=='5') or (Score20[2]=='6') or (Score20[2]=='7') or (Score20[2]=='8') or (Score20[2]=='9'):
+            if (int(Score20[2])<=(1+y10)):
+                y10=y1p0=int(Score20[2])
+        else:
+            y10=y1p0
+        try:
+            f= open('D:\\TeamData.txt', 'w') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'w') as f:
+                f.write('E0    '+ Team1name0[:3]+'    '+Team2name0[:3]+'    '+ str(x10)+'    '+str(y10))
+        except:
+            pass
+        time.sleep(0.3)
+        #print ("Current Time: "+ str(MatchTime))
+        
+    elif (var[0]=='S'):
+        frameTime0 = frame0[122:212, 305:560]
+        frameTeam1_name0 = frame0[130:190, 575:765]
+        frameTeam2_name0 = frame0[130:190, 995:1175]
+        frame_Score10= frame0[115:210,780:1165]
+        frame_Score20= frame0[115:210,780:1165]
+        #cv2.imshow('frame',frame_Score10)
+        Game_Time0= pytesseract.image_to_string(frameTime0)
+        Game_Time0=Game_Time0.rstrip('\n')
+        Game_Tim0=Game_Time0+"AAA"
+        Team1name0 = pytesseract.image_to_string(frameTeam1_name0)
+        Team1name0=Team1name0.rstrip('\n')# removing /n to add data after
+        Team1name0=Team1name0+'1___'# adding data after that in case there is nothing to read 
+        Team2name0 = pytesseract.image_to_string(frameTeam2_name0)
+        Team2name0=Team2name0.rstrip('\n')
+        Team2name0=Team2name0+'1___'
+        Score10=pytesseract.image_to_string(frame_Score10)
+        Score10=Score10.rstrip('\n')# Removing /n from data 
+        Score10=Score10+"AAA"
+        Score20=pytesseract.image_to_string(frame_Score20)
+        Score20=Score20.rstrip('\n')# Removing /n from data 
+        Score20=Score20+"AAA"
+    # Showing Time of the Match
+        Char1_Time0= Game_Time0[:1] 
+        Char2_Time0=Game_Time0[1:2] 
+        Char3_Time0=Game_Time0[2:3]
+        Char1_2_Time0= Game_Time0[:2] 
+        if  (Char1_Time0 =='0') or (Char1_Time0 =='1') or (Char1_Time0=='2') or (Char1_Time0=='3') or (Char1_Time0=='4') or (Char1_Time0=='5') or (Char1_Time0=='6') or (Char1_Time0=='7')or (Char1_Time0=='8') or (Char1_Time0=='9'):
+            if (Char2_Time0 =='0') or (Char2_Time0 =='1') or (Char2_Time0=='2') or (Char2_Time0=='3') or (Char2_Time0=='4') or (Char2_Time0=='5') or (Char2_Time0=='6') or (Char2_Time0=='7')or (Char2_Time0=='8') or (Char2_Time0=='9'):
+                MatchTime0=MatchTime_prev0=int(Char1_2_Time0)
+                f0=1
+        else:
+            MatchTime0=MatchTime_prev0
+            f0=0
+    # End Time of the Match
+    
+    #Showing the Name of the Teams
+        if (Team1name0[3]!='1'):
+            Team1name0= Team1name_prev0
+        else:
+            if (f0==1):
+                Team1name_prev0=Team1name0[:3]
+            else:
+                Team1name0= Team1name_prev0
+
+        if (Team2name0[3]!='1'):
+            Team2name0= Team2name_prev0
+        else:
+            if (f0==1):
+                Team2name_prev0=Team2name0[:3]
+            else:
+                Team2name0= Team2name_prev0
+ 
+    # Showing the Scores:
+        if (Score10[0]=='0') or (Score10[0]=='1') or (Score10[0]=='2') or (Score10[0]=='3') or (Score10[0]=='4') or (Score10[0]=='5') or (Score10[0]=='6') or (Score10[0]=='7') or (Score10[0]=='8') or (Score10[0]=='9'):
+            if (int(Score10[0])<=(1+x10)):
+                x10=x1p0=int(Score10[0])
+        else:
+            x10=x1p0
+   
+        if (Score20[2]=='0') or (Score20[2]=='1') or (Score20[2]=='2') or (Score20[2]=='3') or (Score20[2]=='4') or (Score20[2]=='5') or (Score20[2]=='6') or (Score20[2]=='7') or (Score20[2]=='8') or (Score20[2]=='9'):
+            if (int(Score20[2])<=(1+y10)):
+                y10=y1p0=int(Score20[2])
+        else:
+            y10=y1p0
+        try:
+            f= open('D:\\TeamData.txt', 'w') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'w') as f:
+                f.write('S0    '+ Team1name0[:3]+'    '+Team2name0[:3]+'    '+ str(x10)+'    '+str(y10))
+        except:
+            pass
+        time.sleep(0.3)
+
+    ##############################################################
+    elif (var[0]=='I'):
+        frameTime0 = frame0[130:215, 1180:1370]
+        frameTeam1_name0 = frame0[130:220, 330:540]
+        frameTeam2_name0 = frame0[130:220, 930:1100]
+        frame_Score10= frame0[130:210, 650:800]
+        frame_Score20= frame0[130:210, 650:800]
+        Game_Time0= pytesseract.image_to_string(frameTime0)
+        Game_Time0=Game_Time0.rstrip('\n')
+        Game_Tim0=Game_Time0+"AAA"
+        Team1name0 = pytesseract.image_to_string(frameTeam1_name0)
+        Team1name0=Team1name0.rstrip('\n')# removing /n to add data after
+        Team1name0=Team1name0+'1___'# adding data after that in case there is nothing to read 
+        Team2name0 = pytesseract.image_to_string(frameTeam2_name0)
+        Team2name0=Team2name0.rstrip('\n')
+        Team2name0=Team2name0+'1___'
+        Score10=pytesseract.image_to_string(frame_Score10)
+        Score10=Score10.rstrip('\n')# Removing /n from data 
+        Score10=Score10+"AAA"
+        Score20=pytesseract.image_to_string(frame_Score20)
+        Score20=Score20.rstrip('\n')# Removing /n from data 
+        Score20=Score20+"AAA"
+
+        Char1_Time0= Game_Time0[:1] 
+        Char2_Time0=Game_Time0[1:2] 
+        Char3_Time0=Game_Time0[2:3]
+        Char1_2_Time0= Game_Time0[:2] 
+        fp0=f0
+        if  (Char1_Time0 =='0') or (Char1_Time0 =='1') or (Char1_Time0=='2') or (Char1_Time0=='3') or (Char1_Time0=='4') or (Char1_Time0=='5') or (Char1_Time0=='6') or (Char1_Time0=='7')or (Char1_Time0=='8') or (Char1_Time0=='9'):
+            if (Char2_Time0 =='0') or (Char2_Time0 =='1') or (Char2_Time0=='2') or (Char2_Time0=='3') or (Char2_Time0=='4') or (Char2_Time0=='5') or (Char2_Time0=='6') or (Char2_Time0=='7')or (Char2_Time0=='8') or (Char2_Time0=='9'):
+                MatchTime0=MatchTime_prev0=int(Char1_2_Time0)
+                f0=1
+        else:
+            MatchTime0=MatchTime_prev0
+            f0=0
+        if (f0==1):
+            if(fp0==0):
+                i0=i0+1
+        if (i0>=1):
+            i0=i0+1
+        if (i0>3):
+            i0=0
+
+        if (Team1name0[3]!='1'):
+            Team1name0= Team1name_prev0
+        else:
+            if (f0==1):  
+                Team1name_prev0=Team1name0[:3]    
+            else:
+                Team1name0= Team1name_prev0
+
+        if (Team2name0[3]!='1'):
+            Team2name0= Team2name_prev0
+        else:
+            if (f0==1):
+                Team2name_prev0=Team2name0[:3]
+            else:
+                Team2name0= Team2name_prev0
+
+       
+    # End Name of the teams
+
+    # Showing the Scores:
+        if (f0==1):
+            if (Score10[0]=='0') or (Score10[0]=='1') or (Score10[0]=='2') or (Score10[0]=='3') or (Score10[0]=='4') or (Score10[0]=='5') or (Score10[0]=='6') or (Score10[0]=='7') or (Score10[0]=='8') or (Score10[0]=='9'):
+                if (int(Score10[0])<=(1+x10)):
+                    x10=x1p0=int(Score10[0])
+            else:
+                x10=x1p0
+        else:
+            x10=x1p0
+   
+
+        if (f0==1):
+            if (Score20[2]=='0') or (Score20[2]=='1') or (Score20[2]=='2') or (Score20[2]=='3') or (Score20[2]=='4') or (Score20[2]=='5') or (Score20[2]=='6') or (Score20[2]=='7') or (Score20[2]=='8') or (Score20[2]=='9'):
+                if (int(Score20[2])<=(1+y10)):
+                    y10=y1p0=int(Score20[2])
+            else:
+                y10=y1p0
+        else:
+            y10=y1p0
+        try:
+            f= open('D:\\TeamData.txt', 'w') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'w') as f:
+                f.write('I0    '+ Team1name0[:3]+'    '+Team2name0[:3]+'    '+ str(x10)+'    '+str(y10))
+        except:
+            pass
+        time.sleep(0.3)
+
+#########################################################################
+    elif (var[0]=='G'):
+        frameTime0 = frame0[110:180, 285:460]
+        frameTeam1_name0 = frame0[110:180, 470:630]
+        frameTeam2_name0 = frame0[110:180, 660:800]
+        frame_Score10= frame0[185:315, 475:620]
+        frame_Score20= frame0[185:315, 675:820]
+        Game_Time0= pytesseract.image_to_string(frameTime0)
+        Game_Time0=Game_Time0.rstrip('\n')
+        Game_Time0=Game_Time0+"AAA"
+        Team1name0 = pytesseract.image_to_string(frameTeam1_name0)
+        Team1name0=Team1name0.rstrip('\n')# removing /n to add data after
+        Team1name0=Team1name0+'1___'# adding data after that in case there is nothing to read 
+        Team2name0 = pytesseract.image_to_string(frameTeam2_name0)
+        Team2name0=Team2name0.rstrip('\n')
+        Team2name0=Team2name0+'1___'
+        Score10=pytesseract.image_to_string(frame_Score10, config=("-c tessedit"
+                  "_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                  " --psm 10"
+                  " -l osd"
+                  " "))
+        Score10=Score10.rstrip('\n')# Removing /n from data 
+        Score10=Score10+"AAA"
+        Score20=pytesseract.image_to_string(frame_Score20, config=("-c tessedit"
+                  "_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                  " --psm 10"
+                  " -l osd"
+                  " "))
+        Score20=Score20.rstrip('\n')# Removing /n from data 
+        Score20=Score20+"AAA"
+
+    #///////////////////////////////////////////////////////////////
+    # Showing Time of the Match
+        Char1_Time0= Game_Time0[:1] 
+        Char2_Time0=Game_Time0[1:2] 
+        Char3_Time0=Game_Time0[2:3]
+        Char1_2_Time0= Game_Time0[:2] 
+        if  (Char1_Time0 =='0') or (Char1_Time0 =='1') or (Char1_Time0=='2') or (Char1_Time0=='3') or (Char1_Time0=='4') or (Char1_Time0=='5') or (Char1_Time0=='6') or (Char1_Time0=='7')or (Char1_Time0=='8') or (Char1_Time0=='9'):
+            if (Char2_Time0 =='0') or (Char2_Time0 =='1') or (Char2_Time0=='2') or (Char2_Time0=='3') or (Char2_Time0=='4') or (Char2_Time0=='5') or (Char2_Time0=='6') or (Char2_Time0=='7')or (Char2_Time0=='8') or (Char2_Time0=='9'):
+                MatchTime0=MatchTime_prev0=int(Char1_2_Time0)
+                f0=1
+        else:
+            MatchTime0=MatchTime_prev0
+            f0=0
+
+        if (Team1name0[3]!='1'):
+            Team1name0= Team1name_prev0
+        else:
+            if (f0==1):
+                Team1name_prev0=Team1name0[:3]
+            else:
+                Team1name0= Team1name_prev0
+
+        if (Team2name0[3]!='1'):
+            Team2name0= Team2name_prev0
+        else:
+            if (f0==1):
+                Team2name_prev0=Team2name0[:3]
+            else:
+                Team2name0= Team2name_prev0
+
+        if (Score10[0]=='0') or (Score10[0]=='1') or (Score10[0]=='2') or (Score10[0]=='3') or (Score10[0]=='4') or (Score10[0]=='5') or (Score10[0]=='6') or (Score10[0]=='7') or (Score10[0]=='8') or (Score10[0]=='9'):
+            if (int(Score10[0])<=(1+x10)):
+                x10=x1p0=int(Score10[0])
+        elif (Score10[0]=='l'):
+            if (x10<=1):
+                x10=x1p0=1
+        else:
+            x10=x1p0
+   
+
+
+        if (Score20[0]=='0') or (Score20[0]=='1') or (Score20[0]=='2') or (Score20[0]=='3') or (Score20[0]=='4') or (Score20[0]=='5') or (Score20[0]=='6') or (Score20[0]=='7') or (Score20[0]=='8') or (Score20[0]=='9'):
+            if (int(Score20[0])<=(1+y10)):
+                y10=y1p0=int(Score20[0])
+        elif (Score20[0]=='l'):
+            if (y10<=1):
+                y10=y1p0=1
+        else:
+            y10=y1p0
+        try:
+            f= open('D:\\TeamData.txt', 'w') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'a') as f:
+                f.write('\nG0    '+ Team1name0[:3]+'    '+Team2name0[:3]+'    '+ str(x10)+'    '+str(y10))
+        except:
+            pass
+        time.sleep(0.3)
+
+    elif (var[0]=='F'):
+        frameTime0 = frame0[145:240, 200:445]
+        frameTeam1_name0 = frame0[145:240, 500:820]
+        frameTeam2_name0 = frame0[145:240, 1210:1570]
+        frame_Score10= frame0[135:245,500:950]
+        frame_Score20= frame0[135:245,1100:1570]
+        Game_Time0= pytesseract.image_to_string(frameTime0)
+        Game_Time0=Game_Time0.rstrip('\n')
+        Game_Time0=Game_Time0+"AAA"
+        Team1name0 = pytesseract.image_to_string(frameTeam1_name0)
+        Team1name0=Team1name0.rstrip('\n')# removing /n to add data after
+        Team1name0=Team1name0+'_---'# adding data after that in case there is nothing to read 
+        Team2name0 = pytesseract.image_to_string(frameTeam2_name0)
+        Team2name0=Team2name0.rstrip('\n')
+        Team2name0=Team2name0+'_---'
+        Score10=pytesseract.image_to_string(frame_Score10)
+        Score10=Score10.rstrip('\n')# Removing /n from data 
+        Score10='A'+Score10
+        Score20=pytesseract.image_to_string(frame_Score20)
+        Score20=Score20.rstrip('\n')# Removing /n from data 
+        Score20=Score20+"AAA"
+
+    #//////////////////////////////////////////////////////
+    # Time of the game
+        Char1_Time0= Game_Time0[:1] 
+        Char2_Time0=Game_Time0[1:2] 
+        Char3_Time0=Game_Time0[2:3]
+        Char1_2_Time0= Game_Time0[:2] 
+        if  (Char1_Time0 =='0') or (Char1_Time0 =='1') or (Char1_Time0=='2') or (Char1_Time0=='3') or (Char1_Time0=='4') or (Char1_Time0=='5') or (Char1_Time0=='6') or (Char1_Time0=='7')or (Char1_Time0=='8') or (Char1_Time0=='9'):
+            if (Char2_Time0 =='0') or (Char2_Time0 =='1') or (Char2_Time0=='2') or (Char2_Time0=='3') or (Char2_Time0=='4') or (Char2_Time0=='5') or (Char2_Time0=='6') or (Char2_Time0=='7')or (Char2_Time0=='8') or (Char2_Time0=='9'):
+                MatchTime0=MatchTime_prev0=int(Char1_2_Time0)
+                f0=1
+        else:
+            MatchTime0=MatchTime_prev0
+            f0=0
+
+        if (Team1name0[0]=='_'):
+            Team1name0= Team1name_prev0
+        else:
+            if (f0==1):
+                Team1name_prev0=Team1name0[:3]
+            else:
+                Team1name0= Team1name_prev0
+
+        if (Team2name0[0]=='_'):
+            Team2name0= Team2name_prev0
+        else:
+            if (f0==1):
+                Team2name_prev0=Team2name0[:3]
+            else:
+                Team2name0= Team2name_prev0
+
+    
+        if (Score10[-1]=='0') or (Score10[-1]=='1') or (Score10[-1]=='2') or (Score10[-1]=='3') or (Score10[-1]=='4') or (Score10[-1]=='5') or (Score10[-1]=='6') or (Score10[-1]=='7') or (Score10[-1]=='8') or (Score10[-1]=='9'):
+            if (int(Score10[-1])<=(1+x10)):
+                x10=x1p0=int(Score10[-1])
+
+        elif(Score10[-1]=='G'):
+             if ((x10<=4) and (x10>2)):
+                x10=x1p0=4
+        else:
+            x10=x1p0
+   
+        if (Score20[0]=='0') or (Score20[0]=='1') or (Score20[0]=='2') or (Score20[0]=='3') or (Score20[0]=='4') or (Score20[0]=='5') or (Score20[0]=='6') or (Score20[0]=='7') or (Score20[0]=='8') or (Score20[0]=='9'):
+            if (int(Score20[0])<=(1+y10)):
+                y10=y1p0=int(Score20[0])
+
+        elif(Score20[0]=='G'):
+            if ((y10<=4) and (y10>2)):
+                y10=y1p0=4
+        else:
+            y10=y1p0
+        try:
+            f= open('D:\\TeamData.txt', 'w') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'w') as f:
+                f.write('F0    '+ Team1name0[:3]+'    '+Team2name0[:3]+'    '+ str(x10)+'    '+str(y10))
+        except:
+            pass
+
+        time.sleep(0.3)
+
+    elif (var[0]=='R'):
+        frameTime0 = frame0[110:180, 200:400]
+        frameTeam1_name0 = frame0[110:180, 470:640]
+        frameTeam2_name0 = frame0[110:180, 850:1010]
+        frame_Score10= frame0[110:180, 660:835]
+        frame_Score20= frame0[110:180, 660:835] 
+        #cv2.imshow('frame',frameTeam1_name)
+        Game_Time0= pytesseract.image_to_string(frameTime0)
+        Game_Time0=Game_Time0.rstrip('\n')
+        Game_Tim0=Game_Time0+"AAA"
+        Team1name0 = pytesseract.image_to_string(frameTeam1_name0)
+        Team1name0=Team1name0.rstrip('\n')# removing /n to add data after
+        Team1name0=Team1name0+'1___'# adding data after that in case there is nothing to read 
+        Team2name0 = pytesseract.image_to_string(frameTeam2_name0)
+        Team2name0=Team2name0.rstrip('\n')
+        Team2name0=Team2name0+'1___'
+        Score10=pytesseract.image_to_string(frame_Score10)
+        Score10=Score10.rstrip('\n')# Removing /n from data 
+        Score10=Score10+"AAA"
+        Score20=pytesseract.image_to_string(frame_Score20)
+        Score20=Score20.rstrip('\n')# Removing /n from data 
+        Score20=Score20+"AAA"
+    # Showing Time of the Match
+        Char1_Time0= Game_Time0[:1] 
+        Char2_Time0=Game_Time0[1:2] 
+        Char3_Time0=Game_Time0[2:3]
+        Char1_2_Time0= Game_Time0[:2] 
+        if  (Char1_Time0 =='0') or (Char1_Time0 =='1') or (Char1_Time0=='2') or (Char1_Time0=='3') or (Char1_Time0=='4') or (Char1_Time0=='5') or (Char1_Time0=='6') or (Char1_Time0=='7')or (Char1_Time0=='8') or (Char1_Time0=='9'):
+            if (Char2_Time0 =='0') or (Char2_Time0 =='1') or (Char2_Time0=='2') or (Char2_Time0=='3') or (Char2_Time0=='4') or (Char2_Time0=='5') or (Char2_Time0=='6') or (Char2_Time0=='7')or (Char2_Time0=='8') or (Char2_Time0=='9'):
+                MatchTime0=MatchTime_prev0=int(Char1_2_Time0)
+                f0=1
+        else:
+            MatchTime0=MatchTime_prev0
+            f0=0
+    # End Time of the Match
+    
+    #Showing the Name of the Teams
+        if (Team1name0[3]!='1'):
+            Team1name0= Team1name_prev0
+        else:
+            if (f0==1):
+                Team1name_prev0=Team1name0[:3]
+            else:
+                Team1name0= Team1name_prev0
+
+        if (Team2name0[3]!='1'):
+            Team2name0= Team2name_prev0
+        else:
+            if (f0==1):
+                Team2name_prev0=Team2name0[:3]
+            else:
+                Team2name0= Team2name_prev0
+ 
+    # Showing the Scores:
+        if (Score10[0]=='0') or (Score10[0]=='1') or (Score10[0]=='2') or (Score10[0]=='3') or (Score10[0]=='4') or (Score10[0]=='5') or (Score10[0]=='6') or (Score10[0]=='7') or (Score10[0]=='8') or (Score10[0]=='9'):
+            if (int(Score10[0])<=(1+x10)):
+                x10=x1p0=int(Score10[0])
+        else:
+            x10=x1p0
+   
+        if (Score20[2]=='0') or (Score20[2]=='1') or (Score20[2]=='2') or (Score20[2]=='3') or (Score20[2]=='4') or (Score20[2]=='5') or (Score20[2]=='6') or (Score20[2]=='7') or (Score20[2]=='8') or (Score20[2]=='9'):
+            if (int(Score20[2])<=(1+y10)):
+                y10=y1p0=int(Score20[2])
+        else:
+            y10=y1p0
+        try:
+            f= open('D:\\TeamData.txt', 'w') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'w') as f:
+                f.write('R0    '+ Team1name0[:3]+'    '+Team2name0[:3]+'    '+ str(x10)+'    '+str(y10))
+        except:
+            pass
+        time.sleep(0.3)
+
+        
+        #with open('D:\\TeamData.txt', 'w') as f:
+            #f.write('___')
+#################################################################################################################################
+    if(var[1]=='E'):
+        frameTime1 = frame1[280:350, 420:615]
+        frameTeam1_name1 = frame1[205:270, 230:390]
+        frameTeam2_name1 = frame1[205:270, 630:815]
+        frame_Score11= frame1[210:345, 440:585]
+        frame_Score21= frame1[210:345, 440:585]
+        #cv2.imshow('frame',frameTeam1_name)
+        Game_Time1= pytesseract.image_to_string(frameTime1)
+        Game_Time1=Game_Time1.rstrip('\n')
+        Game_Tim1=Game_Time1+"AAA"
+        Team1name1 = pytesseract.image_to_string(frameTeam1_name1)
+        Team1name1=Team1name1.rstrip('\n')# removing /n to add data after
+        Team1name1=Team1name1+'1___'# adding data after that in case there is nothing to read 
+        Team2name1 = pytesseract.image_to_string(frameTeam2_name1)
+        Team2name1=Team2name1.rstrip('\n')
+        Team2name1=Team2name1+'1___'
+        Score11=pytesseract.image_to_string(frame_Score11)
+        Score11=Score11.rstrip('\n')# Removing /n from data 
+        Score11=Score11+"AAA"
+        Score21=pytesseract.image_to_string(frame_Score21)
+        Score21=Score21.rstrip('\n')# Removing /n from data 
+        Score21=Score21+"AAA"
+
+    # Showing Time of the Match
+        Char1_Time1= Game_Time1[:1] 
+        Char2_Time1=Game_Time1[1:2] 
+        Char3_Time1=Game_Time1[2:3]
+        Char1_2_Time1= Game_Time1[:2] 
+        if  (Char1_Time1 =='0') or (Char1_Time1 =='1') or (Char1_Time1=='2') or (Char1_Time1=='3') or (Char1_Time1=='4') or (Char1_Time1=='5') or (Char1_Time1=='6') or (Char1_Time1=='7')or (Char1_Time1=='8') or (Char1_Time1=='9'):
+            if (Char2_Time1 =='0') or (Char2_Time1 =='1') or (Char2_Time1=='2') or (Char2_Time1=='3') or (Char2_Time1=='4') or (Char2_Time1=='5') or (Char2_Time1=='6') or (Char2_Time1=='7')or (Char2_Time1=='8') or (Char2_Time1=='9'):
+                MatchTime1=MatchTime_prev1=int(Char1_2_Time1)
+                f1=1
+        else:
+            MatchTime1=MatchTime_prev1
+            f1=0
+    #Showing the Name of the Teams
+        if (Team1name1[3]!='1'):
+            Team1name1= Team1name_prev1
+        else:
+            if (f1==1):
+                Team1name_prev1=Team1name1[:3]
+            else:
+                Team1name1= Team1name_prev1
+
+        if (Team2name1[3]!='1'):
+            Team2name1= Team2name_prev1
+        else:
+            if (f1==1):
+                Team2name_prev1=Team2name1[:3]
+            else:
+                Team2name1= Team2name_prev1
+
+    # Showing the Scores:
+        if (Score11[0]=='0') or (Score11[0]=='1') or (Score11[0]=='2') or (Score11[0]=='3') or (Score11[0]=='4') or (Score11[0]=='5') or (Score11[0]=='6') or (Score11[0]=='7') or (Score11[0]=='8') or (Score11[0]=='9'):
+            if (int(Score11[0])<=(1+x11)):
+                x11=x1p1=int(Score11[0])
+        else:
+            x11=x1p1
+   
+        if (Score21[2]=='0') or (Score21[2]=='1') or (Score21[2]=='2') or (Score21[2]=='3') or (Score21[2]=='4') or (Score21[2]=='5') or (Score21[2]=='6') or (Score21[2]=='7') or (Score21[2]=='8') or (Score21[2]=='9'):
+            if (int(Score21[2])<=(1+y11)):
+                y11=y1p1=int(Score21[2])
+        else:
+            y11=y1p1
+        try:
+            f= open('D:\\TeamData.txt', 'a') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'a') as f:
+                f.write('\nE1    '+ Team1name1[:3]+'    '+Team2name1[:3]+'    '+ str(x11)+'    '+str(y11))
+        #print('E1    '+ Team1name1[:3]+'    '+Team2name1[:3]+'    '+ str(x11)+'    '+str(y11))
+        except:
+            pass
+        time.sleep(0.3)
+#############################################################################################
+    elif (var[1]=='S'):
+        frameTime1 = frame1[122:212, 305:560]
+        frameTeam1_name1 = frame1[130:190, 575:765]
+        frameTeam2_name1 = frame1[130:190, 995:1175]
+        frame_Score11= frame1[115:210,780:1165]
+        frame_Score21= frame1[115:210,780:1165]
+        #cv2.imshow('frame',frame_Score11)
+        Game_Time1= pytesseract.image_to_string(frameTime1)
+        Game_Time1=Game_Time1.rstrip('\n')
+        Game_Tim1=Game_Time1+"AAA"
+        Team1name1 = pytesseract.image_to_string(frameTeam1_name1)
+        Team1name1=Team1name1.rstrip('\n')# removing /n to add data after
+        Team1name1=Team1name1+'1___'# adding data after that in case there is nothing to read 
+        Team2name1 = pytesseract.image_to_string(frameTeam2_name1)
+        Team2name1=Team2name1.rstrip('\n')
+        Team2name1=Team2name1+'1___'
+        Score11=pytesseract.image_to_string(frame_Score11)
+        Score11=Score11.rstrip('\n')# Removing /n from data 
+        Score11=Score11+"AAA"
+        Score21=pytesseract.image_to_string(frame_Score21)
+        Score21=Score21.rstrip('\n')# Removing /n from data 
+        Score21=Score21+"AAA"
+
+    #///////////////////////////////////////////////////////////////
+    # Showing Time of the Match
+        Char1_Time1= Game_Time1[:1] 
+        Char2_Time1=Game_Time1[1:2] 
+        Char3_Time1=Game_Time1[2:3]
+        Char1_2_Time1= Game_Time1[:2] 
+        if  (Char1_Time1 =='0') or (Char1_Time1 =='1') or (Char1_Time1=='2') or (Char1_Time1=='3') or (Char1_Time1=='4') or (Char1_Time1=='5') or (Char1_Time1=='6') or (Char1_Time1=='7')or (Char1_Time1=='8') or (Char1_Time1=='9'):
+            if (Char2_Time1 =='0') or (Char2_Time1 =='1') or (Char2_Time1=='2') or (Char2_Time1=='3') or (Char2_Time1=='4') or (Char2_Time1=='5') or (Char2_Time1=='6') or (Char2_Time1=='7')or (Char2_Time1=='8') or (Char2_Time1=='9'):
+                MatchTime1=MatchTime_prev1=int(Char1_2_Time1)
+                f1=1
+        else:
+            MatchTime1=MatchTime_prev1
+            f1=0
+    #Showing the Name of the Teams
+        if (Team1name1[3]!='1'):
+            Team1name1= Team1name_prev1
+        else:
+            if (f1==1):
+                Team1name_prev1=Team1name1[:3]
+            else:
+                Team1name1= Team1name_prev1
+
+        if (Team2name1[3]!='1'):
+            Team2name1= Team2name_prev1
+        else:
+            if (f1==1):
+                Team2name_prev1=Team2name1[:3]
+            else:
+                Team2name1= Team2name_prev1
+
+    # Showing the Scores:
+        if (Score11[0]=='0') or (Score11[0]=='1') or (Score11[0]=='2') or (Score11[0]=='3') or (Score11[0]=='4') or (Score11[0]=='5') or (Score11[0]=='6') or (Score11[0]=='7') or (Score11[0]=='8') or (Score11[0]=='9'):
+            if (int(Score11[0])<=(1+x11)):
+                x11=x1p1=int(Score11[0])
+        else:
+            x11=x1p1
+   
+        if (Score21[2]=='0') or (Score21[2]=='1') or (Score21[2]=='2') or (Score21[2]=='3') or (Score21[2]=='4') or (Score21[2]=='5') or (Score21[2]=='6') or (Score21[2]=='7') or (Score21[2]=='8') or (Score21[2]=='9'):
+            if (int(Score21[2])<=(1+y11)):
+                y11=y1p1=int(Score21[2])
+        else:
+            y11=y1p1
+        try:
+            f= open('D:\\TeamData.txt', 'a') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'a') as f:
+                f.write('\nS1    '+ Team1name1[:3]+'    '+Team2name1[:3]+'    '+ str(x11)+'    '+str(y11))
+        except:
+            pass
+        time.sleep(0.3)
+    elif (var[1]=='I'):
+        frameTime1 = frame1[130:215, 1180:1370]
+        frameTeam1_name1 = frame1[130:220, 330:540]
+        frameTeam2_name1 = frame1[130:220, 930:1100]
+        frame_Score11= frame1[130:210, 650:800]
+        frame_Score21= frame1[130:210, 650:800]
+        Game_Time1= pytesseract.image_to_string(frameTime1)
+        Game_Time1=Game_Time1.rstrip('\n')
+        Game_Tim1=Game_Time1+"AAA"
+        Team1name1 = pytesseract.image_to_string(frameTeam1_name1)
+        Team1name1=Team1name1.rstrip('\n')# removing /n to add data after
+        Team1name1=Team1name1+'1___'# adding data after that in case there is nothing to read 
+        Team2name1 = pytesseract.image_to_string(frameTeam2_name1)
+        Team2name1=Team2name1.rstrip('\n')
+        Team2name1=Team2name1+'1___'
+        Score11=pytesseract.image_to_string(frame_Score11)
+        Score11=Score11.rstrip('\n')# Removing /n from data 
+        Score11=Score11+"AAA"
+        Score21=pytesseract.image_to_string(frame_Score21)
+        Score21=Score21.rstrip('\n')# Removing /n from data 
+        Score21=Score21+"AAA"
+
+        Char1_Time1= Game_Time1[:1] 
+        Char2_Time1=Game_Time1[1:2] 
+        Char3_Time1=Game_Time1[2:3]
+        Char1_2_Time1= Game_Time1[:2] 
+        fp1=f1
+        if  (Char1_Time1 =='0') or (Char1_Time1 =='1') or (Char1_Time1=='2') or (Char1_Time1=='3') or (Char1_Time1=='4') or (Char1_Time1=='5') or (Char1_Time1=='6') or (Char1_Time1=='7')or (Char1_Time1=='8') or (Char1_Time1=='9'):
+            if (Char2_Time1 =='0') or (Char2_Time1 =='1') or (Char2_Time1=='2') or (Char2_Time1=='3') or (Char2_Time1=='4') or (Char2_Time1=='5') or (Char2_Time1=='6') or (Char2_Time1=='7')or (Char2_Time1=='8') or (Char2_Time1=='9'):
+                MatchTime1=MatchTime_prev1=int(Char1_2_Time1)
+                f1=1
+        else:
+            MatchTime1=MatchTime_prev1
+            f1=0
+        if (f1==1):
+            if(fp1==0):
+                i1=i1+1
+        if (i1>=1):
+            i1=i1+1
+        if (i1>3):
+            i1=0
+
+        if (Team1name1[3]!='1'):
+            Team1name1= Team1name_prev1
+        else:
+            if (f1==1):  
+                Team1name_prev1=Team1name1[:3]    
+            else:
+                Team1name1= Team1name_prev1
+
+        if (Team2name1[3]!='1'):
+            Team2name1= Team2name_prev1
+        else:
+            if (f1==1):
+                Team2name_prev1=Team2name1[:3]
+            else:
+                Team2name1= Team2name_prev1
+
+       
+    # End Name of the teams
+
+    # Showing the Scores:
+        if (f1==1):
+            if (Score11[0]=='0') or (Score11[0]=='1') or (Score11[0]=='2') or (Score11[0]=='3') or (Score11[0]=='4') or (Score11[0]=='5') or (Score11[0]=='6') or (Score11[0]=='7') or (Score11[0]=='8') or (Score11[0]=='9'):
+                if (int(Score11[0])<=(1+x11)):
+                    x11=x1p1=int(Score11[0])
+            else:
+                x11=x1p1
+        else:
+            x11=x1p1
+   
+
+        if (f1==1):
+            if (Score21[2]=='0') or (Score21[2]=='1') or (Score21[2]=='2') or (Score21[2]=='3') or (Score21[2]=='4') or (Score21[2]=='5') or (Score21[2]=='6') or (Score21[2]=='7') or (Score21[2]=='8') or (Score21[2]=='9'):
+                if (int(Score21[2])<=(1+y11)):
+                    y11=y1p1=int(Score21[2])
+            else:
+                y11=y1p1
+        else:
+            y11=y1p1
+        try:
+            f= open('D:\\TeamData.txt', 'a') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'a') as f:
+                f.write('\nI1    '+ Team1name1[:3]+'    '+Team2name1[:3]+'    '+ str(x11)+'    '+str(y11))
+        except:
+            pass
+        time.sleep(0.3)  
+#####################################################################################
+
+    elif (var[1]=='G'):
+        frameTime1 = frame1[110:180, 285:460]
+        frameTeam1_name1 = frame1[110:180, 470:630]
+        frameTeam2_name1 = frame1[110:180, 660:800]
+        frame_Score11= frame1[185:315, 475:620]
+        frame_Score21= frame1[185:315, 675:820]
+        Game_Time1= pytesseract.image_to_string(frameTime1)
+        Game_Time1=Game_Time1.rstrip('\n')
+        Game_Time1=Game_Time1+"AAA"
+        Team1name1 = pytesseract.image_to_string(frameTeam1_name1)
+        Team1name1=Team1name1.rstrip('\n')# removing /n to add data after
+        Team1name1=Team1name1+'1___'# adding data after that in case there is nothing to read 
+        Team2name1 = pytesseract.image_to_string(frameTeam2_name1)
+        Team2name1=Team2name1.rstrip('\n')
+        Team2name1=Team2name1+'1___'
+        Score11=pytesseract.image_to_string(frame_Score11, config=("-c tessedit"
+                  "_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                  " --psm 10"
+                  " -l osd"
+                  " "))
+        Score11=Score11.rstrip('\n')# Removing /n from data 
+        Score11=Score11+"AAA"
+        Score21=pytesseract.image_to_string(frame_Score21, config=("-c tessedit"
+                  "_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                  " --psm 10"
+                  " -l osd"
+                  " "))
+        Score21=Score21.rstrip('\n')# Removing /n from data 
+        Score21=Score21+"AAA"
+
+    #///////////////////////////////////////////////////////////////
+    # Showing Time of the Match
+        Char1_Time1= Game_Time1[:1] 
+        Char2_Time1=Game_Time1[1:2] 
+        Char3_Time1=Game_Time1[2:3]
+        Char1_2_Time1= Game_Time1[:2] 
+        if  (Char1_Time1 =='0') or (Char1_Time1 =='1') or (Char1_Time1=='2') or (Char1_Time1=='3') or (Char1_Time1=='4') or (Char1_Time1=='5') or (Char1_Time1=='6') or (Char1_Time1=='7')or (Char1_Time1=='8') or (Char1_Time1=='9'):
+            if (Char2_Time1 =='0') or (Char2_Time1 =='1') or (Char2_Time1=='2') or (Char2_Time1=='3') or (Char2_Time1=='4') or (Char2_Time1=='5') or (Char2_Time1=='6') or (Char2_Time1=='7')or (Char2_Time1=='8') or (Char2_Time1=='9'):
+                MatchTime1=MatchTime_prev1=int(Char1_2_Time1)
+                f1=1
+        else:
+            MatchTime1=MatchTime_prev1
+            f1=0
+
+        if (Team1name1[3]!='1'):
+            Team1name1= Team1name_prev1
+        else:
+            if (f1==1):
+                Team1name_prev1=Team1name1[:3]
+            else:
+                Team1name1= Team1name_prev1
+
+        if (Team2name1[3]!='1'):
+            Team2name1= Team2name_prev1
+        else:
+            if (f1==1):
+                Team2name_prev1=Team2name1[:3]
+            else:
+                Team2name1= Team2name_prev1
+
+        if (Score11[0]=='0') or (Score11[0]=='1') or (Score11[0]=='2') or (Score11[0]=='3') or (Score11[0]=='4') or (Score11[0]=='5') or (Score11[0]=='6') or (Score11[0]=='7') or (Score11[0]=='8') or (Score11[0]=='9'):
+            if (int(Score11[0])<=(1+x11)):
+                x11=x1p1=int(Score11[0])
+        elif (Score11[0]=='l'):
+            if (x11<=1):
+                x11=x1p1=1
+        else:
+            x11=x1p1
+   
+
+
+        if (Score21[0]=='0') or (Score21[0]=='1') or (Score21[0]=='2') or (Score21[0]=='3') or (Score21[0]=='4') or (Score21[0]=='5') or (Score21[0]=='6') or (Score21[0]=='7') or (Score21[0]=='8') or (Score21[0]=='9'):
+            if (int(Score21[0])<=(1+y11)):
+                y11=y1p1=int(Score21[0])
+        elif (Score21[0]=='l'):
+            if (y11<=1):
+                y11=y1p1=1
+        else:
+            y11=y1p1
+        try:
+            f= open('D:\\TeamData.txt', 'a') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'a') as f:
+                f.write('\nG1    '+ Team1name1[:3]+'    '+Team2name1[:3]+'    '+ str(x11)+'    '+str(y11))
+        except:
+            pass
+        time.sleep(0.3)        
+    
+    elif (var[1]=='F'):
+        frameTime1 = frame1[145:240, 200:445]
+        frameTeam1_name1 = frame1[145:240, 500:820]
+        frameTeam2_name1 = frame1[145:240, 1210:1570]
+        frame_Score11= frame1[135:245,500:950]
+        frame_Score21= frame1[135:245,1100:1570]
+        Game_Time1= pytesseract.image_to_string(frameTime1)
+        Game_Time1=Game_Time1.rstrip('\n')
+        Game_Time1=Game_Time1+"AAA"
+        Team1name1 = pytesseract.image_to_string(frameTeam1_name1)
+        Team1name1=Team1name1.rstrip('\n')# removing /n to add data after
+        Team1name1=Team1name1+'1___'# adding data after that in case there is nothing to read 
+        Team2name1 = pytesseract.image_to_string(frameTeam2_name1)
+        Team2name1=Team2name1.rstrip('\n')
+        Team2name1=Team2name1+'1___'
+        Score11=pytesseract.image_to_string(frame_Score11)
+        Score11=Score11.rstrip('\n')# Removing /n from data 
+        Score11='A'+Score11
+        Score21=pytesseract.image_to_string(frame_Score21)
+        Score21=Score21.rstrip('\n')# Removing /n from data 
+        Score21=Score21+"AAA"
+
+    #//////////////////////////////////////////////////////
+    # Time of the game
+        Char1_Time1= Game_Time1[:1] 
+        Char2_Time1=Game_Time1[1:2] 
+        Char3_Time1=Game_Time1[2:3]
+        Char1_2_Time1= Game_Time1[:2] 
+        if  (Char1_Time1 =='0') or (Char1_Time1 =='1') or (Char1_Time1=='2') or (Char1_Time1=='3') or (Char1_Time1=='4') or (Char1_Time1=='5') or (Char1_Time1=='6') or (Char1_Time1=='7')or (Char1_Time1=='8') or (Char1_Time1=='9'):
+            if (Char2_Time1 =='0') or (Char2_Time1 =='1') or (Char2_Time1=='2') or (Char2_Time1=='3') or (Char2_Time1=='4') or (Char2_Time1=='5') or (Char2_Time1=='6') or (Char2_Time1=='7')or (Char2_Time1=='8') or (Char2_Time1=='9'):
+                MatchTime1=MatchTime_prev1=int(Char1_2_Time1)
+                f1=1
+        else:
+            MatchTime1=MatchTime_prev1
+            f1=0
+
+        if (Team1name1[0]=='1'):
+            Team1name1= Team1name_prev1
+        else:
+            if (f1==1):
+                Team1name_prev1=Team1name1[:3]
+            else:
+                Team1name1= Team1name_prev1
+
+        if (Team2name1[0]=='1'):
+            Team2name1= Team2name_prev1
+        else:
+            if (f1==1):
+                Team2name_prev1=Team2name1[:3]
+            else:
+                Team2name1= Team2name_prev1
+
+    
+        if (Score11[-1]=='0') or (Score11[-1]=='1') or (Score11[-1]=='2') or (Score11[-1]=='3') or (Score11[-1]=='4') or (Score11[-1]=='5') or (Score11[-1]=='6') or (Score11[-1]=='7') or (Score11[-1]=='8') or (Score11[-1]=='9'):
+            if (int(Score11[-1])<=(1+x11)):
+                x11=x1p1=int(Score11[-1])
+
+        elif(Score11[-1]=='G'):
+             if ((x11<=4) and (x11>2)):
+                x11=x1p1=4
+        else:
+            x11=x1p1
+   
+        if (Score21[0]=='0') or (Score21[0]=='1') or (Score21[0]=='2') or (Score21[0]=='3') or (Score21[0]=='4') or (Score21[0]=='5') or (Score21[0]=='6') or (Score21[0]=='7') or (Score21[0]=='8') or (Score21[0]=='9'):
+            if (int(Score21[0])<=(1+y11)):
+                y11=y1p1=int(Score21[0])
+
+        elif(Score21[0]=='G'):
+            if ((y11<=4) and (y11>2)):
+                y11=y1p1=4
+        else:
+            y11=y1p1
+        try:
+            f= open('D:\\TeamData.txt', 'a') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'a') as f:
+                f.write('\nF1    '+ Team1name1[:3]+'    '+Team2name1[:3]+'    '+ str(x11)+'    '+str(y11))
+        except:
+            pass
+
+        time.sleep(0.3)
+    elif(var[1]=='R'):
+        frameTime1 = frame1[110:180, 200:400]
+        frameTeam1_name1 = frame1[110:180, 470:640]
+        frameTeam2_name1 = frame1[110:180, 850:1010]
+        frame_Score11= frame1[110:180, 660:835]
+        frame_Score21= frame1[110:180, 660:835]
+        #cv2.imshow('frame',frameTeam1_name)
+        Game_Time1= pytesseract.image_to_string(frameTime1)
+        Game_Time1=Game_Time1.rstrip('\n')
+        Game_Tim1=Game_Time1+"AAA"
+        Team1name1 = pytesseract.image_to_string(frameTeam1_name1)
+        Team1name1=Team1name1.rstrip('\n')# removing /n to add data after
+        Team1name1=Team1name1+'1___'# adding data after that in case there is nothing to read 
+        Team2name1 = pytesseract.image_to_string(frameTeam2_name1)
+        Team2name1=Team2name1.rstrip('\n')
+        Team2name1=Team2name1+'1___'
+        Score11=pytesseract.image_to_string(frame_Score11)
+        Score11=Score11.rstrip('\n')# Removing /n from data 
+        Score11=Score11+"AAA"
+        Score21=pytesseract.image_to_string(frame_Score21)
+        Score21=Score21.rstrip('\n')# Removing /n from data 
+        Score21=Score21+"AAA"
+
+    # Showing Time of the Match
+        Char1_Time1= Game_Time1[:1] 
+        Char2_Time1=Game_Time1[1:2] 
+        Char3_Time1=Game_Time1[2:3]
+        Char1_2_Time1= Game_Time1[:2] 
+        if  (Char1_Time1 =='0') or (Char1_Time1 =='1') or (Char1_Time1=='2') or (Char1_Time1=='3') or (Char1_Time1=='4') or (Char1_Time1=='5') or (Char1_Time1=='6') or (Char1_Time1=='7')or (Char1_Time1=='8') or (Char1_Time1=='9'):
+            if (Char2_Time1 =='0') or (Char2_Time1 =='1') or (Char2_Time1=='2') or (Char2_Time1=='3') or (Char2_Time1=='4') or (Char2_Time1=='5') or (Char2_Time1=='6') or (Char2_Time1=='7')or (Char2_Time1=='8') or (Char2_Time1=='9'):
+                MatchTime1=MatchTime_prev1=int(Char1_2_Time1)
+                f1=1
+        else:
+            MatchTime1=MatchTime_prev1
+            f1=0
+    #Showing the Name of the Teams
+        if (Team1name1[3]!='1'):
+            Team1name1= Team1name_prev1
+        else:
+            if (f1==1):
+                Team1name_prev1=Team1name1[:3]
+            else:
+                Team1name1= Team1name_prev1
+
+        if (Team2name1[3]!='1'):
+            Team2name1= Team2name_prev1
+        else:
+            if (f1==1):
+                Team2name_prev1=Team2name1[:3]
+            else:
+                Team2name1= Team2name_prev1
+
+    # Showing the Scores:
+        if (Score11[0]=='0') or (Score11[0]=='1') or (Score11[0]=='2') or (Score11[0]=='3') or (Score11[0]=='4') or (Score11[0]=='5') or (Score11[0]=='6') or (Score11[0]=='7') or (Score11[0]=='8') or (Score11[0]=='9'):
+            if (int(Score11[0])<=(1+x11)):
+                x11=x1p1=int(Score11[0])
+        else:
+            x11=x1p1
+   
+        if (Score21[2]=='0') or (Score21[2]=='1') or (Score21[2]=='2') or (Score21[2]=='3') or (Score21[2]=='4') or (Score21[2]=='5') or (Score21[2]=='6') or (Score21[2]=='7') or (Score21[2]=='8') or (Score21[2]=='9'):
+            if (int(Score21[2])<=(1+y11)):
+                y11=y1p1=int(Score21[2])
+        else:
+            y11=y1p1
+        try:
+            f= open('D:\\TeamData.txt', 'a') 
+            if (f.writable()==True):
+        #with open('D:\\TeamData.txt', 'a') as f:
+                f.write('\nR1    '+ Team1name1[:3]+'    '+Team2name1[:3]+'    '+ str(x11)+'    '+str(y11))
+        except:
+            pass
+        time.sleep(0.3)
+    else:
+        pass
+
+########################################################################################################################################
+
+    
+
+###########################################################################################################################################
+    print('done')
+    k=cv2.waitKey(10) & 0xFF
+    if k==27:
+        break
+cap0.release()
+cap1.release()
+
+cv2.destroyAllWindows()
+
+
